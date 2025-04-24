@@ -1,0 +1,166 @@
+from IPython.display import display, HTML, Javascript
+
+# HTML + CSS + JS for Futuristic Frontend
+
+html_content = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-Toe Game</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(145deg, #1a1a1a, #343434);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .game-container {
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 255, 255, 0.4);
+        }
+        h1 {
+            color: #00ffcc;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px);
+            gap: 10px;
+        }
+        .cell {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2em;
+            color: #00ffcc;
+            background-color: #111;
+            border: 2px solid #00ffcc;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .cell:hover {
+            background-color: #333;
+        }
+        .cell.taken {
+            cursor: not-allowed;
+        }
+        .status {
+            margin-top: 20px;
+            font-size: 1.5em;
+            color: #00ffcc;
+        }
+        .reset-btn {
+            background-color: #00ffcc;
+            border: none;
+            color: #111;
+            font-size: 1em;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+        .reset-btn:hover {
+            background-color: #009999;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Tic-Tac-Toe</h1>
+        <div class="board" id="board"></div>
+        <div class="status" id="status">Player X's Turn</div>
+        <button class="reset-btn" id="resetBtn">Reset Game</button>
+    </div>
+
+    <script>
+        let currentPlayer = 'X';
+        let gameBoard = ['', '', '', '', '', '', '', '', ''];
+        const board = document.getElementById('board');
+        const status = document.getElementById('status');
+        const resetBtn = document.getElementById('resetBtn');
+
+        // Create game board dynamically
+        for (let i = 0; i < 9; i++) {
+            const cell = document.createElement('div');
+            cell.classList.add('cell');
+            cell.setAttribute('data-index', i);
+            cell.addEventListener('click', handleCellClick);
+            board.appendChild(cell);
+        }
+
+        // Handle cell click
+        function handleCellClick(event) {
+            const cell = event.target;
+            const index = cell.getAttribute('data-index');
+            
+            // If the cell is already taken, do nothing
+            if (gameBoard[index] !== '') return;
+
+            // Mark the cell
+            gameBoard[index] = currentPlayer;
+            cell.textContent = currentPlayer;
+            cell.classList.add('taken');
+
+            // Check for win
+            if (checkWin(currentPlayer)) {
+                status.textContent = `Player ${currentPlayer} Wins! 🎉`;
+                return;
+            }
+
+            // Check for draw
+            if (gameBoard.every(cell => cell !== '')) {
+                status.textContent = "It's a draw! 😞";
+                return;
+            }
+
+            // Switch player
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            status.textContent = `Player ${currentPlayer}'s Turn`;
+        }
+
+        // Check win conditions
+        function checkWin(player) {
+            const winPatterns = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8],
+                [0, 3, 6], [1, 4, 7], [2, 5, 8],
+                [0, 4, 8], [2, 4, 6]
+            ];
+            return winPatterns.some(pattern => {
+                return pattern.every(index => gameBoard[index] === player);
+            });
+        }
+
+        // Reset game
+        resetBtn.addEventListener('click', () => {
+            gameBoard = ['', '', '', '', '', '', '', '', ''];
+            currentPlayer = 'X';
+            status.textContent = `Player X's Turn`;
+
+            // Reset board UI
+            const cells = document.querySelectorAll('.cell');
+            cells.forEach(cell => {
+                cell.textContent = '';
+                cell.classList.remove('taken');
+            });
+        });
+    </script>
+</body>
+</html>
+"""
+
+# Display the HTML/CSS/JS content
+display(HTML(html_content))
